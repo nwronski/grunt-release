@@ -63,7 +63,10 @@ module.exports = function(grunt){
 
     // Defaults
     var options = grunt.util._.extend({
+      // Toggle sending child process output to the main console
       silent: true,
+      // Wait for 5 seconds between pushing tags and creating the release on GitHub and/or npm
+      wait: false,
       bump: true,
       changelog: false, // Update changelog file
 
@@ -197,6 +200,10 @@ module.exports = function(grunt){
       run('git push ' + options.remote + ' ' + tagName, 'pushed new tag '+ config.newVersion +' to remote');
     }
 
+    function wait(){
+      run('sleep 5', 'waited for 5 seconds just to be safe');
+    }
+
     function publish(){
       var cmd = 'npm publish';
       var msg = 'published version '+ config.newVersion +' to npm';
@@ -322,6 +329,7 @@ module.exports = function(grunt){
       .then(ifEnabled('tag', tag))
       .then(ifEnabled('push', push))
       .then(ifEnabled('pushTags', pushTags))
+      .then(ifEnabled('wait', wait))
       .then(ifEnabled('npm', publish))
       .then(ifEnabled('github', githubRelease))
       .then(ifEnabled('afterRelease', runTasks('afterRelease')))
