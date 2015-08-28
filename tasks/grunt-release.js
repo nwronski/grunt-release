@@ -63,6 +63,7 @@ module.exports = function(grunt){
 
     // Defaults
     var options = grunt.util._.extend({
+      silent: true,
       bump: true,
       changelog: false, // Update changelog file
 
@@ -108,7 +109,7 @@ module.exports = function(grunt){
       grunt.warn('Resulting version number is empty.');
     }
 
-    if (nowrite){
+    if (nowrite) {
       grunt.log.ok('Release dry run.');
     }
 
@@ -136,13 +137,11 @@ module.exports = function(grunt){
         deferred.resolve();
       }
       else {
-        var success = shell.exec(cmd, {silent:true}).code === 0;
-
-        if (success){
+        if (shell.exec(cmd, {silent: options.silent}).code === 0){
           grunt.log.ok(msg || cmd);
           deferred.resolve();
         }
-        else{
+        else {
           // fail and stop execution of further tasks
           deferred.reject('Failed when executing: `' + cmd + '`\n');
         }
